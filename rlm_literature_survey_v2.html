@@ -1,0 +1,1422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recursive Language Models — Literature Survey Resource Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500;1,400&family=Newsreader:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0f0e0c;
+    --paper: #f5f2ec;
+    --cream: #ede9e0;
+    --rust: #b84a2d;
+    --teal: #1a6b6a;
+    --gold: #9a7a2e;
+    --muted: #6b6560;
+    --rule: #ccc7be;
+    --highlight: #f0e9d8;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Newsreader', Georgia, serif;
+    font-size: 17px;
+    line-height: 1.7;
+  }
+
+  /* ── MASTHEAD ── */
+  header {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 3.5rem 0 2.5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      90deg, transparent, transparent 80px,
+      rgba(255,255,255,0.03) 80px, rgba(255,255,255,0.03) 81px
+    );
+    pointer-events: none;
+  }
+  .kicker {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--rust);
+    margin-bottom: 1rem;
+  }
+  header h1 {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-size: clamp(2rem, 5vw, 3.6rem);
+    font-weight: 400;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.6rem;
+    max-width: 780px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  header h1 em { font-style: italic; color: #c8b88a; }
+  .subtitle {
+    font-family: 'Newsreader', serif;
+    font-style: italic;
+    font-size: 1.1rem;
+    color: #a09880;
+    margin-bottom: 2rem;
+  }
+  .meta-row {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+  .meta-pill {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 0.3rem 0.85rem;
+    border-radius: 999px;
+    color: #c8c0b0;
+  }
+
+  /* ── NAV STRIP ── */
+  nav {
+    background: var(--cream);
+    border-bottom: 2px solid var(--ink);
+    padding: 0.8rem 2rem;
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  nav span {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-right: 0.5rem;
+  }
+  nav a {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    color: var(--ink);
+    text-decoration: none;
+    padding: 0.2rem 0;
+    border-bottom: 1.5px solid transparent;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  nav a:hover { color: var(--rust); border-color: var(--rust); }
+
+  /* ── LAYOUT ── */
+  .page-wrap {
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 0 2rem 6rem;
+  }
+
+  /* ── THESIS BANNER ── */
+  .thesis-banner {
+    background: var(--rust);
+    color: white;
+    padding: 1.3rem 2rem;
+    margin: 0 -2rem;
+    font-family: 'Instrument Serif', serif;
+    font-size: 1.15rem;
+    font-style: italic;
+    line-height: 1.5;
+    text-align: center;
+    letter-spacing: 0.01em;
+  }
+  .thesis-banner strong {
+    font-style: normal;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    display: block;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+    opacity: 0.8;
+  }
+
+  /* ── INTRO BLOCK ── */
+  .intro {
+    display: grid;
+    grid-template-columns: 1fr 290px;
+    gap: 3rem;
+    padding: 3rem 0 2.5rem;
+    border-bottom: 1px solid var(--rule);
+    align-items: start;
+  }
+  @media(max-width:720px){ .intro { grid-template-columns: 1fr; } }
+  .intro-body p { margin-bottom: 1.1em; color: #2a2825; }
+  .intro-body p.editorial {
+    font-style: italic;
+    border-left: 3px solid var(--rust);
+    padding-left: 1rem;
+    color: #4a4540;
+    margin-top: 1.4rem;
+  }
+
+  /* ── READING ORDER BOX ── */
+  .reading-box {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 1.8rem;
+    border-radius: 4px;
+  }
+  .reading-box h3 {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--rust);
+    margin-bottom: 1.2rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  .reading-step {
+    display: flex;
+    gap: 0.9rem;
+    align-items: flex-start;
+    margin-bottom: 0.9rem;
+  }
+  .step-num {
+    font-family: 'Instrument Serif', serif;
+    font-size: 1.5rem;
+    color: #c8b88a;
+    line-height: 1;
+    flex-shrink: 0;
+    width: 22px;
+    text-align: right;
+  }
+  .step-body {
+    font-size: 0.82rem;
+    color: #c8c0b0;
+    line-height: 1.5;
+  }
+  .step-body strong { color: white; display: block; font-size: 0.84rem; }
+
+  /* ── SECTION HEADERS ── */
+  .section {
+    margin-top: 4rem;
+    scroll-margin-top: 60px;
+  }
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 0.6rem;
+  }
+  .section-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--rust);
+    letter-spacing: 0.12em;
+    border: 1px solid var(--rust);
+    padding: 0.15rem 0.5rem;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+  .section-header h2 {
+    font-family: 'Instrument Serif', serif;
+    font-size: 1.6rem;
+    font-weight: 400;
+  }
+  .section-intro {
+    background: var(--highlight);
+    border-left: 3px solid var(--gold);
+    padding: 1rem 1.4rem;
+    margin-bottom: 2rem;
+    color: #4a4540;
+    font-size: 0.96rem;
+  }
+  .section-intro em { font-style: italic; }
+
+  /* ── PAPER CARDS ── */
+  .paper-grid { display: grid; gap: 1.2rem; }
+
+  .paper-card {
+    background: white;
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 1.4rem 1.6rem;
+    transition: box-shadow 0.2s, border-color 0.2s;
+  }
+  .paper-card:hover {
+    box-shadow: 0 3px 16px rgba(0,0,0,0.09);
+    border-color: #b0a898;
+  }
+  /* Priority signal: landmark papers get a left accent */
+  .paper-card.landmark {
+    border-left: 4px solid var(--rust);
+  }
+  .paper-card.overlooked {
+    border-left: 4px solid var(--gold);
+  }
+  .paper-card.infra-paper {
+    border-left: 4px solid var(--teal);
+  }
+
+  .paper-card .tag-row {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.7rem;
+  }
+  .tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.18rem 0.55rem;
+    border-radius: 2px;
+  }
+  .tag-foundational { background: #e8d5c4; color: #6b3518; }
+  .tag-architecture  { background: #c4dde8; color: #183d6b; }
+  .tag-application   { background: #d5e8c4; color: #2a5e18; }
+  .tag-survey        { background: #e8e0c4; color: #5e4f18; }
+  .tag-modern        { background: #d4c4e8; color: #3d186b; }
+  .tag-benchmark     { background: #e8c4d5; color: #6b183d; }
+  .tag-infra         { background: #c4e8e0; color: #185e4f; }
+
+  /* Priority label */
+  .priority-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.15rem 0.5rem;
+    border-radius: 2px;
+    margin-left: auto;
+  }
+  .p-landmark { background: var(--rust); color: white; }
+  .p-overlooked { background: var(--gold); color: white; }
+  .p-infra { background: var(--teal); color: white; }
+
+  .paper-card h3 {
+    font-family: 'Newsreader', serif;
+    font-size: 1.05rem;
+    font-weight: 600;
+    line-height: 1.35;
+    margin-bottom: 0.4rem;
+  }
+  .paper-card .authors {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+  }
+  .paper-card p {
+    font-size: 0.88rem;
+    color: #4a4540;
+    line-height: 1.55;
+    margin-bottom: 0.8rem;
+  }
+  .paper-card p.critical-note {
+    font-style: italic;
+    color: #6b3518;
+    border-top: 1px dashed var(--rule);
+    padding-top: 0.6rem;
+    margin-top: 0.4rem;
+    font-size: 0.84rem;
+  }
+  .paper-links {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+  .link-btn {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.67rem;
+    letter-spacing: 0.07em;
+    text-decoration: none;
+    padding: 0.3rem 0.8rem;
+    border-radius: 2px;
+    transition: opacity 0.15s;
+  }
+  .link-btn:hover { opacity: 0.75; }
+  .link-primary { background: var(--ink); color: var(--paper); }
+  .link-acl     { background: var(--teal); color: white; }
+  .link-github  { background: #24292e; color: white; }
+  .link-pdf     { background: var(--rust); color: white; }
+  .link-blog    { background: var(--gold); color: white; }
+
+  /* ── DISPLACEMENT CALLOUT ── */
+  .displacement-note {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 1.2rem 1.6rem;
+    border-radius: 4px;
+    margin: 1.5rem 0 0.5rem;
+    font-size: 0.88rem;
+    line-height: 1.55;
+  }
+  .displacement-note strong {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--rust);
+    display: block;
+    margin-bottom: 0.4rem;
+  }
+
+  /* ── RESEARCHER TABLE ── */
+  .researcher-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1rem;
+  }
+  .researcher-card {
+    background: white;
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 1.2rem 1.4rem;
+    transition: box-shadow 0.2s;
+  }
+  .researcher-card:hover { box-shadow: 0 3px 12px rgba(0,0,0,0.08); }
+  .researcher-card h4 {
+    font-family: 'Instrument Serif', serif;
+    font-size: 1.1rem;
+    margin-bottom: 0.2rem;
+  }
+  .researcher-card .affil {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--rust);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+  .researcher-card p { font-size: 0.82rem; color: #5a5550; line-height: 1.45; }
+
+  /* ── DB TABLE ── */
+  .db-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+  }
+  .db-table thead { background: var(--ink); color: var(--paper); }
+  .db-table th {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.75rem 1rem;
+    text-align: left;
+  }
+  .db-table td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+  .db-table tr:nth-child(even) td { background: #faf8f4; }
+  .db-table a {
+    color: var(--teal);
+    text-decoration: none;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+  }
+  .db-table a:hover { text-decoration: underline; }
+
+  /* ── TAXONOMY ── */
+  .taxonomy-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 1rem;
+  }
+  .tax-card {
+    border: 2px solid var(--ink);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .tax-header {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 0.7rem 1rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .tax-body {
+    padding: 0.9rem 1rem;
+    background: white;
+  }
+  .tax-body ul { list-style: none; padding: 0; }
+  .tax-body li {
+    font-size: 0.84rem;
+    padding: 0.22rem 0 0.22rem 0.8rem;
+    border-bottom: 1px solid var(--rule);
+    color: #3a3530;
+    position: relative;
+  }
+  .tax-body li::before { content: '›'; position: absolute; left: 0; color: var(--rust); }
+  .tax-body li:last-child { border-bottom: none; }
+  .tax-note {
+    font-size: 0.78rem;
+    font-style: italic;
+    color: var(--muted);
+    margin-top: 0.6rem;
+    padding-top: 0.5rem;
+    border-top: 1px dashed var(--rule);
+  }
+
+  /* ── OPEN QUESTIONS ── */
+  .questions-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.2rem;
+  }
+  @media(max-width:680px){ .questions-grid { grid-template-columns: 1fr; } }
+  .q-card {
+    background: white;
+    border: 1px solid var(--rule);
+    border-top: 3px solid var(--rust);
+    padding: 1.3rem 1.4rem;
+    border-radius: 0 0 4px 4px;
+  }
+  .q-card h4 {
+    font-family: 'Newsreader', serif;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    line-height: 1.35;
+  }
+  .q-card p {
+    font-size: 0.84rem;
+    color: #5a5550;
+    line-height: 1.5;
+  }
+
+  /* ── CALLOUT ── */
+  .callout {
+    background: var(--cream);
+    border: 1px solid var(--rule);
+    border-left: 4px solid var(--teal);
+    padding: 1.1rem 1.4rem;
+    border-radius: 0 4px 4px 0;
+    margin: 1.5rem 0;
+    font-size: 0.9rem;
+    color: #3a3530;
+  }
+  .callout strong { color: var(--teal); }
+
+  /* ── FOOTNOTE ── */
+  .footnote-strip {
+    border-top: 1px solid var(--rule);
+    margin-top: 3rem;
+    padding-top: 1.4rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--muted);
+    line-height: 1.8;
+  }
+  .footnote-strip p { margin-bottom: 0.4em; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--ink);
+    color: var(--muted);
+    text-align: center;
+    padding: 2.5rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    margin-top: 5rem;
+  }
+  footer a { color: #c8b88a; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════ HEADER ══════════════════════════════════════ -->
+<header>
+  <div class="kicker">Literature Survey Resource Guide · March 2026</div>
+  <h1>Recursive Language Models<br><em>& Recursive Neural Architectures in NLP</em></h1>
+  <p class="subtitle">A working bibliography and research map for graduate literature review</p>
+  <div class="meta-row">
+    <div class="meta-pill">60+ Curated Papers</div>
+    <div class="meta-pill">8 Thematic Categories</div>
+    <div class="meta-pill">Early 2010s → 2026</div>
+    <div class="meta-pill">arXiv · ACL · NeurIPS · ICLR</div>
+  </div>
+</header>
+
+<!-- ══════════════════════════════════════ NAV ══════════════════════════════════════ -->
+<nav>
+  <span>Jump to →</span>
+  <a href="#foundations">Foundations</a>
+  <a href="#seminal">Seminal RvNNs</a>
+  <a href="#modern">Modern RLMs</a>
+  <a href="#efficient">Efficient Attention</a>
+  <a href="#surveys">Surveys</a>
+  <a href="#applications">Applications</a>
+  <a href="#researchers">Researchers</a>
+  <a href="#databases">Databases</a>
+  <a href="#taxonomy">Taxonomy</a>
+  <a href="#openqs">Open Questions</a>
+</nav>
+
+<!-- ══════════════════════════════════════ BODY ══════════════════════════════════════ -->
+<div class="page-wrap">
+
+<!-- THESIS BANNER -->
+<div class="thesis-banner">
+  <strong>Central Argument of This Survey</strong>
+  Recursion in neural NLP has undergone three distinct paradigm shifts: from <em>structural composition</em> (tree-structured RvNNs, 2010–2015), through <em>recurrent memory</em> (SSMs, block-wise Transformers, 2018–2023), to <em>inference-time self-invocation</em> (RLMs, 2025–present). Understanding why each paradigm displaced the last is at least as important as cataloguing what each achieved.
+</div>
+
+  <!-- INTRO -->
+  <div class="intro">
+    <div class="intro-body">
+      <p>This bibliography started as an attempt to reconcile two research traditions that share a name but not a mechanism. "Recursive neural networks" in the early 2010s meant parse-tree-guided composition — Socher et al. building phrase representations bottom-up from syntax trees. "Recursive language models" in 2025 means something structurally different: LLMs that call themselves programmatically at inference time to process inputs far beyond their context window. The name is preserved; the mechanism is almost unrecognizable.</p>
+
+      <p>That tension turned out to be the interesting question. Why did tree-structured RvNNs — which achieved genuine compositional insight — largely disappear after 2018 when Transformers scaled more easily? And why, having abandoned explicit recursion for flat attention, are researchers now reintroducing recursion at a different level of abstraction? The documents in this guide are selected with those questions in mind, not just as a complete inventory.</p>
+
+      <p>Papers are linked directly to arXiv, ACL Anthology, or project pages where available. A small number of links may drift over time; the arXiv identifiers are stable and should serve as the canonical references. Coverage skews toward the 2025–2026 RLM wave since that literature is moving fast and is harder to track. The classical RvNN literature from Stanford NLP is well-documented and easier to locate independently.</p>
+
+      <p class="editorial">A note on scope: this guide does not attempt to cover all recurrent models, all memory-augmented Transformers, or the full SSM literature. It follows the recursion thread specifically. Mamba and S4 are included because they represent the most competitive alternative architectural paradigm, not because they are recursive in any strict sense.</p>
+
+      <div class="callout">
+        <strong>Terminology:</strong> "RvNN" = tree-structured Recursive Neural Network (Socher lineage). "RLM" = Recursive Language Model in the 2025 sense (Zhang, Kraska & Khattab). These are not the same thing. The survey argues they are part of a single conceptual lineage, but that argument needs to be made — it is not obvious.
+      </div>
+    </div>
+    <div class="reading-box">
+      <h3>Suggested Reading Order</h3>
+      <div class="reading-step">
+        <div class="step-num">1</div>
+        <div class="step-body"><strong>Start with the 2025 RLM paper</strong>arXiv:2512.24601. Read it first so you know what the survey is ultimately about, then work backward.</div>
+      </div>
+      <div class="reading-step">
+        <div class="step-num">2</div>
+        <div class="step-body"><strong>Socher's 2013 EMNLP + 2014 thesis</strong>These define what "recursive" meant before Transformers. The 2013 paper is the minimal-viable version; the thesis is the complete account.</div>
+      </div>
+      <div class="reading-step">
+        <div class="step-num">3</div>
+        <div class="step-body"><strong>Tai et al. Tree-LSTM (2015)</strong>The last major classical RvNN paper before displacement. Understand it as a peak, not a beginning.</div>
+      </div>
+      <div class="reading-step">
+        <div class="step-num">4</div>
+        <div class="step-body"><strong>Universal Transformer (2019)</strong>The bridge. Depth-wise parameter sharing is the conceptual handoff between the two eras.</div>
+      </div>
+      <div class="reading-step">
+        <div class="step-num">5</div>
+        <div class="step-body"><strong>Mamba + RMT</strong>The competing approaches. Read these before concluding that RLMs are necessary.</div>
+      </div>
+      <div class="reading-step">
+        <div class="step-num">6</div>
+        <div class="step-body"><strong>arXiv:2510.17867 survey</strong>Use as a structural template. Map your argument against its taxonomy.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════ SECTION 1: FOUNDATIONS ══════════════════ -->
+  <div class="section" id="foundations">
+    <div class="section-header">
+      <span class="section-num">§ 01</span>
+      <h2>Foundational Definitions & Early Recursive Architectures</h2>
+    </div>
+    <div class="section-intro">
+      The Stanford NLP lineage, roughly 2010–2015. These papers establish recursive composition as a principled approach to meaning: vectors propagate up parse trees, combining at each node under a learned composition function. The results were genuinely impressive for their time. What this framing required, though, was a reliable external parser — and that dependency turned out to be a significant practical liability once BERT arrived and made parsing optional.
+    </div>
+    <div class="paper-grid">
+
+      <div class="paper-card landmark">
+        <div class="tag-row">
+          <span class="tag tag-foundational">Foundational</span>
+          <span class="tag tag-architecture">Architecture</span>
+          <span class="priority-label p-landmark">Landmark — Read in Full</span>
+        </div>
+        <h3>Recursive Deep Learning for Natural Language Processing and Computer Vision (PhD Thesis)</h3>
+        <div class="authors">Richard Socher · Stanford University · 2014</div>
+        <p>If only one document from the classical RvNN era is read in full, this should be it. The thesis synthesizes everything Socher developed from 2010–2013: composition functions, parse-tree-guided learning, sentiment analysis, relation classification, visual-linguistic grounding. It is also unusually well-written for a dissertation — the motivation sections are worth reading as intellectual history, not just technical reference.</p>
+        <div class="paper-links">
+          <a class="link-btn link-pdf" href="https://nlp.stanford.edu/~manning/dissertations/Socher-Richard-thesis-augmented.pdf" target="_blank">PDF (Stanford)</a>
+        </div>
+      </div>
+
+      <div class="paper-card">
+        <div class="tag-row">
+          <span class="tag tag-foundational">Foundational</span>
+        </div>
+        <h3>Learning Continuous Phrase Representations and Syntactic Parsing with Recursive Neural Networks</h3>
+        <div class="authors">Socher, Manning & Ng · NIPS Workshop 2010</div>
+        <p>The paper that began the modern RvNN tradition. It is worth reading alongside the thesis rather than instead of it — the thesis situates it more clearly within the broader program. The core idea (bottom-up vector composition over syntax trees) is here in embryonic form.</p>
+        <div class="paper-links">
+          <a class="link-btn link-pdf" href="https://nlp.stanford.edu/pubs/SocherManningNg_NIPS2010.pdf" target="_blank">PDF (Stanford NLP)</a>
+        </div>
+      </div>
+
+      <div class="paper-card landmark">
+        <div class="tag-row">
+          <span class="tag tag-foundational">Foundational</span>
+          <span class="tag tag-benchmark">Benchmark</span>
+          <span class="priority-label p-landmark">Landmark</span>
+        </div>
+        <h3>Recursive Deep Models for Semantic Compositionality Over a Sentiment Treebank</h3>
+        <div class="authors">Socher et al. · EMNLP 2013</div>
+        <p>This paper did two things that turned out to matter independently. The Stanford Sentiment Treebank (SST) it introduced became a standard benchmark well beyond RvNN research — it is still cited in 2025 papers that have nothing to do with recursive architectures. The Recursive Neural Tensor Network (RNTN) itself was quickly surpassed, but the dataset outlasted the model by a decade. Read the benchmark contribution separately from the architectural one.</p>
+        <p class="critical-note">Note: most post-2018 papers use SST as a dataset while ignoring the RNTN architecture entirely. That split is itself revealing about what in this work had lasting value.</p>
+        <div class="paper-links">
+          <a class="link-btn link-acl" href="https://aclanthology.org/D13-1170/" target="_blank">ACL Anthology</a>
+          <a class="link-btn link-pdf" href="https://nlp.stanford.edu/~socherr/EMNLP2013_RNTN.pdf" target="_blank">PDF</a>
+        </div>
+      </div>
+
+      <div class="paper-card">
+        <div class="tag-row">
+          <span class="tag tag-foundational">Foundational</span>
+          <span class="tag tag-architecture">Architecture</span>
+        </div>
+        <h3>Semantic Compositionality Through Recursive Matrix-Vector Spaces (MV-RNN)</h3>
+        <div class="authors">Socher, Huval, Manning & Ng · EMNLP 2012</div>
+        <p>Extends RvNNs with matrix-vector representations — every node stores both a vector (the meaning) and a matrix (how it modifies its neighbors). The motivation was to model negation and scope, which additive composition systematically fails at. The MV-RNN showed early promise on this problem, though it remained difficult to scale. This paper is worth revisiting when reviewing how recursive architectures handle semantic operators, since the problem it targets — compositional modification — has not been fully solved by Transformers either.</p>
+        <div class="paper-links">
+          <a class="link-btn link-acl" href="https://aclanthology.org/D12-1110/" target="_blank">ACL Anthology</a>
+        </div>
+      </div>
+
+      <div class="paper-card landmark">
+        <div class="tag-row">
+          <span class="tag tag-foundational">Foundational</span>
+          <span class="tag tag-architecture">Architecture</span>
+          <span class="priority-label p-landmark">Landmark</span>
+        </div>
+        <h3>Improved Semantic Representations From Tree-Structured LSTM Networks</h3>
+        <div class="authors">Tai, Socher & Manning · ACL 2015</div>
+        <p>Tree-LSTMs are the most direct architectural successor to RvNNs: the LSTM gating mechanism is adapted to operate over arbitrary tree structures rather than linear sequences. The paper demonstrated substantial improvements over chain LSTMs on sentiment classification and semantic relatedness, and for a brief period it felt like the natural direction for the field. In retrospect, it arrived just as BERT-style pretraining was beginning to make syntactic scaffolding unnecessary. Read it as the peak of the classical paradigm — not as a beginning.</p>
+        <div class="paper-links">
+          <a class="link-btn link-acl" href="https://aclanthology.org/P15-1150/" target="_blank">ACL Anthology</a>
+          <a class="link-btn link-primary" href="https://arxiv.org/abs/1503.00075" target="_blank">arXiv</a>
+        </div>
+      </div>
+
+      <div class="paper-card">
+        <div class="tag-row">
+          <span class="tag tag-foundational">Foundational</span>
+        </div>
+        <h3>Semi-Supervised Recursive Autoencoders for Predicting Sentiment Distributions</h3>
+        <div class="authors">Socher, Pennington, Huang, Ng & Manning · EMNLP 2011</div>
+        <p>Introduces reconstruction error as a training signal for recursive phrase representations. Architecturally simpler than the RNTN, but the semi-supervised framing was ahead of its time. Less essential than the 2013 and 2015 papers but useful for completeness.</p>
+        <div class="paper-links">
+          <a class="link-btn link-acl" href="https://aclanthology.org/D11-1014/" target="_blank">ACL Anthology</a>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="displacement-note">
+      <strong>The Displacement Question</strong>
+      By 2018–2019, RvNNs had largely disappeared from mainstream NLP. BERT and its successors offered stronger performance without requiring parse trees, and the dependency on external syntactic structure that had been a feature became a liability at scale. The Tree-LSTM paper (above) arguably marks the ceiling of what classical RvNNs achieved before this displacement. The survey should address this transition explicitly: the abandonment of explicit recursion was not a judgment that recursion was conceptually wrong — it was a judgment that the particular form it took (syntax-dependent tree composition) was not the right level of abstraction for general NLP.
+    </div>
+  </div>
+
+  <!-- ══════════════════ SECTION 2: SEMINAL RvNN WORK ══════════════════ -->
+  <div class="section" id="seminal">
+    <div class="section-header">
+      <span class="section-num">§ 02</span>
+      <h2>Seminal RvNN Extensions: Logic, NLI & Syntax-Free Trees</h2>
+    </div>
+    <div class="section-intro">
+      The papers in this section pushed the classical paradigm into harder territory — logical semantics, natural language inference, and tree induction without external parsers. Some of this work is underappreciated precisely because it was published just as the field shifted away from RvNNs. The CRvNN paper in particular (2021) is worth reading as evidence that recursive composition was not exhausted as an idea — it was simply abandoned before its full potential was explored.
+    </div>
+    <div class="paper-grid">
+
+      <div class="paper-card overlooked">
+        <div class="tag-row">
+          <span class="tag tag-architecture">Architecture</span>
+          <span class="tag tag-application">Reasoning</span>
+          <span class="priority-label p-overlooked">Underappreciated</span>
+        </div>
+        <h3>A Recursive Neural Network Model That Can Learn Logical Semantics</h3>
+        <div class="authors">Bowman, Potts & Manning · EMNLP 2015</div>
+        <p>One of the more conceptually ambitious papers in the classical period. Bowman et al. showed that RNTNs can learn the meaning of logical operators from labeled tree structures — negation, conjunction, disjunction — not just approximate them. This directly anticipated questions that chain-of-thought and formal reasoning research would return to a decade later. The paper is rarely cited today outside its own immediate lineage, which is a minor bibliographic injustice.</p>
+        <div class="paper-links">
+          <a class="link-btn link-acl" href="https://aclanthology.org/W15-4002/" target="_blank">ACL Anthology</a>
+          <a class="link-btn link-primary" href="https://arxiv.org/abs/1406.1827" target="_blank">arXiv</a>
+        </div>
+      </div>
+
+      <div class="paper-card landmark">
+        <div class="tag-row">
+          <span class="tag tag-benchmark">Benchmark</span>
+          <span class="priority-label p-landmark">Landmark — Dataset Endures</span>
+        </div>
+        <h3>A Large Annotated Corpus for Learning Natural Language Inference (SNLI)</h3>
+        <div class="authors">Bowman et al. · EMNLP 2015</div>
+        <p>SNLI was explicitly motivated by the kind of compositional, parse-tree-structured reasoning that RvNNs were designed for. The irony is that it quickly became a benchmark where flat-attention models outperformed recursive ones. That result deserves analysis in the survey — it is not self-evidently a win for Transformers so much as evidence that the SNLI task did not fully operationalize the compositional demands that motivated its creation.</p>
+        <div class="paper-links">
+          <a class="link-btn link-acl" href="https://aclanthology.org/D15-1075/" target="_blank">ACL Anthology</a>
+        </div>
+      </div>
+
+      <div class="paper-card">
+        <div class="tag-row">
+          <span class="tag tag-architecture">Architecture</span>
+        </div>
+        <h3>Ordered-Neuron: Integrating Tree Structures Into Recurrent Neural Networks (ON-LSTM)</h3>
+        <div class="authors">Shen, Tan, Sordoni, Courville · NeurIPS 2019</div>
+        <p>ON-LSTM is a rare example of a model that induces tree structure without an explicit parser and without departing from the sequential RNN framework. The ordered neuron inductive bias causes the model to spontaneously develop constituency-like representations. That it appeared in 2019 — after the Transformer wave had crested — meant it received less attention than it deserved. Still relevant for the latent tree induction thread of this survey.</p>
+        <div class="paper-links">
+          <a class="link-btn link-primary" href="https://arxiv.org/abs/1810.09536" target="_blank">arXiv</a>
+        </div>
+      </div>
+
+      <div class="paper-card overlooked">
+        <div class="tag-row">
+          <span class="tag tag-architecture">Architecture</span>
+          <span class="priority-label p-overlooked">Underappreciated</span>
+        </div>
+        <h3>Continuous Recursive Neural Networks (CRvNN)</h3>
+        <div class="authors">Chowdhury & Caragea · ACL 2021</div>
+        <p>This is worth more attention than it typically receives. CRvNN extends classical tree recursion to differentiable, continuous tree induction — no discrete parsing decisions, no external syntactic supervision. The results on length generalization (particularly ListOps) are striking, and this paper makes a credible case that the compositional power of recursive architectures had not been exhausted when the field moved on. Whether CRvNN's approach scales is an open question; the paper's argument that it should is worth engaging seriously.</p>
+        <div class="paper-links">
+          <a class="link-btn link-acl" href="https://aclanthology.org/2021.acl-long.338/" target="_blank">ACL Anthology</a>
+          <a class="link-btn link-primary" href="https://arxiv.org/abs/2105.14686" target="_blank">arXiv</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════ SECTION 3: MODERN RLMs ══════════════════ -->
+  <div class="section" id="modern">
+    <div class="section-header">
+      <span class="section-num">§ 03</span>
+      <h2>Modern Recursive Language Models (2025–2026)</h2>
+    </div>
+    <div class="section-intro">
+      The 2025 wave. This is where the name "recursive" reappears in a completely different sense: not tree-structured composition of token vectors, but an LLM calling itself programmatically at inference time, managing unbounded inputs through a sandboxed execution environment. The conceptual leap from §01 to here is large enough that the survey needs to argue for continuity — it is not obvious that these belong in the same literature review at all. The argument for including them together is the Universal Transformer in §04, which provides a structural bridge.
+    </div>
+    <div class="paper-grid">
+
+      <div class="paper-card landmark">
+        <div class="tag-row">
+          <span class="tag tag-modern">Modern RLM</span>
+          <span class="tag tag-architecture">Architecture</span>
+          <span class="priority-label p-landmark">Landmark — Start Here</span>
+        </div>
+        <h3>Recursive Language Models</h3>
+        <div class="authors">Alex L. Zhang, Tim Kraska, Omar Khattab · MIT / Stanford · arXiv Dec 2025</div>
+        <p>The defining paper of the new paradigm. The core idea is disarmingly simple: treat long inputs as external environment variables in a Python REPL, let the LM write Python code to decompose and recursively call itself over manageable sub-inputs, and accumulate results. The recursion here is not architectural — no weights are shared across tree nodes — but computational: the same model is invoked multiple times with structured state passing between calls. RLM-Qwen3-8B, the first model trained natively for this behavior, is included in the evaluation. The gap between RLM and RAG / summarization baselines on the OOLONG benchmark is striking and probably deserves its own section in the survey.</p>
+        <div class="paper-links">
+          <a class="link-btn link-primary" href="https://arxiv.org/abs/2512.24601" target="_blank">arXiv 2512.24601</a>
+          <a class="link-btn link-blog" href="https://alexzhang13.github.io/blog/2025/rlm/" target="_blank">Project Blog</a>
+          <a class="link-btn link-github" href="https://github.com/alexzhang13/rlm" target="_blank">GitHub</a>
+        </div>
+      </div>
+
+      <div class="paper-card">
+        <div class="tag-row">
+          <span class="tag tag-modern">Modern RLM</span>
+          <span class="tag tag-architecture">Theory</span>
+        </div>
+        <h3>Recursive Models for Long-Horizon Reasoning</h3>
+        <div class="authors">arXiv 2603.02112 · March 2026</div>
+        <p>The formal theoretical treatment that the 2025 paper somewhat glosses over. Proves that any computable problem is modularizable into recursive sub-tasks fitting within a bounded context, and that a constant-depth Transformer can serve as the transition function of a recursive machine. The finding that recursion depth is critical — that shallow recursion degrades to simpler context management strategies — provides a testable claim the survey should engage with directly.</p>
+        <div class="paper-links">
+          <a class="link-btn link-primary" href="https://arxiv.org/abs/2603.02112" target="_blank">arXiv 2603.02112</a>
+        </div>
+      </div>
+
+      <div class="paper-card">
+        <div class="tag-row">
+          <span class="tag tag-modern">Modern RLM</span>
+          <span class="tag tag-architecture">Efficiency</span>
+        </div>
+        <h3>Mixture-of-Recursions (MoR): Learning Dynamic Recursive Depth</h3>
+        <div class="authors">arXiv 2507.10524 · 2025</div>
+        <p>A natural follow-on to the RLM paper: if recursion depth matters, can models learn to assign different depths to different tokens? MoR introduces routing mechanisms for this, with KV-cache sharing across recursion steps cutting memory to roughly half of a vanilla Transformer. This is an infrastructure efficiency paper more than a conceptual one, but it matters for deployment.</p>
+        <div class="paper-links">
+          <a class="link-btn link-primary" href="https://arxiv.org/abs/2507.10524" target="_blank">arXiv 2507.10524</a>
+        </div>
+      </div>
+
+      <div class="paper-card">
+        <div class="tag-row">
+          <span class="tag tag-modern">Modern RLM</span>
+          <span class="tag tag-architecture">Bridge</span>
+        </div>
+        <h3>Universal Transformers</h3>
+        <div class="authors">Dehghani, Gouws, Vinyals, Uszkoreit, Kaiser · ICLR 2019</div>
+        <p>The missing link between the classical and modern paradigms. Universal Transformers apply the same Transformer block repeatedly at each depth step — parameter sharing in the depth dimension — with a Pondering mechanism for dynamic halting. This can be interpreted as depth-wise recursion over representations, though it was not framed explicitly in those terms at the time. It is worth asking in the survey why Universal Transformers did not achieve widespread adoption despite strong theoretical properties: the answer probably involves training instability and the difficulty of learning good halting policies.</p>
+        <div class="paper-links">
+          <a class="link-btn link-primary" href="https://arxiv.org/abs/1807.03819" target="_blank">arXiv 1807.03819</a>
+        </div>
+      </div>
+
+      <div class="paper-card infra-paper">
+        <div class="tag-row">
+          <span class="tag tag-modern">Modern RLM</span>
+          <span class="tag tag-infra">Infrastructure</span>
+          <span class="priority-label p-infra">Practical Implementation</span>
+        </div>
+        <h3>Prime Intellect RLMEnv & INTELLECT-3 Implementation</h3>
+        <div class="authors">Prime Intellect Research · Jan 2026</div>
+        <p>Industrial implementation of the RLM paradigm. Useful as a companion to the theoretical papers — it shows what actually works in practice (root LM controlling a sandboxed Python REPL, sub-LM tool calls, answer variable accumulation) and where the approach currently struggles (consistent gains on DeepDive and OOLONG, but noisier results on open-ended mathematical reasoning). The blog post is more candid about failure modes than most academic papers.</p>
+        <div class="paper-links">
+          <a class="link-btn link-blog" href="https://www.primeintellect.ai/blog/rlm" target="_blank">Prime Intellect Blog</a>
+        </div>
+      </div>
+
+      <div class="paper-card">
+        <div class="tag-row">
+          <span class="tag tag-modern">Modern RLM</span>
+          <span class="tag tag-architecture">Memory</span>
+        </div>
+        <h3>Recurrent Memory Transformer (RMT)</h3>
+        <div class="authors">Bulatov, Kuratov, Burtsev · NeurIPS 2022</div>
+        <p>Special memory tokens attached to segment-level processing, passed recurrently across segment boundaries. No architectural changes to the base Transformer. RMT is genuinely elegant in its minimalism and probably still underused relative to its conceptual cleanliness. The comparison with RLMs is instructive: RMT handles long context through implicit compressed state; RLMs handle it through explicit structured program execution. Both work; they fail differently.</p>
+        <div class="paper-links">
+          <a class="link-btn link-primary" href="https://arxiv.org/abs/2207.06881" target="_blank">arXiv 2207.06881</a>
+        </div>
+      </div>
+
+      <div class="paper-card">
+        <div class="tag-row">
+          <span class="tag tag-modern">Modern RLM</span>
+          <span class="tag tag-architecture">Memory</span>
+        </div>
+        <h3>Leave No Context Behind: Infini-Attention</h3>
+        <div class="authors">Munkhdalai et al. · Google · arXiv 2404.07143 · 2024</div>
+        <p>Computes both local attention within a fixed window and an incrementally updated global memory — in a single Transformer block, no segment discarded. The engineering is clean. Infini-attention is probably the strongest purely architectural long-context approach currently, though it requires modifying the base model rather than working on top of an existing one as RLMs do.</p>
+        <div class="paper-links">
+          <a class="link-btn link-primary" href="https://arxiv.org/abs/2404.07143" target="_blank">arXiv 2404.07143</a>
+        </div>
+      </div>
+
+      <div class="paper-card">
+        <div class="tag-row">
+          <span class="tag tag-modern">Modern RLM</span>
+          <span class="tag tag-architecture">Memory</span>
+        </div>
+        <h3>Titans: Learning to Memorize at Test Time</h3>
+        <div class="authors">Behrouz et al. · Google DeepMind · arXiv 2501.00663 · 2025</div>
+        <p>Adds neural long-term memory modules updated via gradient descent during inference — test-time learning as a memory mechanism. The results are strong and the conceptual framing is provocative: if you can update weights during inference, what is the boundary between training and test time? That question connects more deeply to the RLM paradigm than the paper makes explicit.</p>
+        <div class="paper-links">
+          <a class="link-btn link-primary" href="https://arxiv.org/abs/2501.00663" target="_blank">arXiv 2501.00663</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════ SECTION 4: EFFICIENT ATTENTION ══════════════════ -->
+  <div class="section" id="efficient">
+    <div class="section-header">
+      <span class="section-num">§ 04</span>
+      <h2>Efficient Attention, Block-Wise Recursion & SSMs</h2>
+    </div>
+    <div class="section-intro">
+      The practical long-context alternatives. These models matter for the survey because they represent the competing answers to the same question: how do you process more than a context window's worth of input? Mamba and S4 answer through selective state compression; Ring Attention through distributed block processing; RLMs through explicit recursive program execution. Including these without arguing for how they differ from each other — and from RLMs — would be a missed opportunity.
+    </div>
+    <div class="paper-grid">
+
+      <div class="paper-card landmark">
+        <div class="tag-row">
+          <span class="tag tag-architecture">Architecture</span>
+          <span class="tag tag-infra">SSM</span>
+          <span class="priority-label p-landmark">Landmark</span>
+        </div>
+        <h3>Mamba: Linear-Time Sequence Modeling with Selective State Spaces</h3>
+        <div class="authors">Gu & Dao · COLM 2024 · arXiv 2312.00752</div>
+        <p>The most prominent Transformer alternative of the last two years. Selective state transitions — input-dependent rather than fixed — give Mamba the content-based reasoning that made SSMs previously uncompetitive with attention. Linear sequence-length scaling and 5× throughput gains over comparable Transformers are practically significant. The honest assessment: Mamba is strong up to certain context lengths and then plateaus in ways that RLMs do not, because selective compression inevitably loses information. The survey should characterize that tradeoff rather than simply listing Mamba as a competitor.</p>
+        <div class="paper-links">
+          <a class="link-btn link-primary" href="https://arxiv.org/abs/2312.00752" target="_blank">arXiv 2312.00752</a>
+        </div>
+      </div>
+
+      <div class="paper-card infra-paper">
+        <div class="tag-row">
+          <span class="tag tag-architecture">Architecture</span>
+          <span class="tag tag-infra">SSM</span>
+          <span class="priority-label p-infra">Infrastructure</span>
+        </div>
+        <h3>Efficiently Modeling Long Sequences with Structured State Spaces (S4)</h3>
+        <div class="authors">Gu, Goel & Ré · ICLR 2022 · arXiv 2111.00396</div>
+        <p>The foundational SSM paper underlying Mamba. The HiPPO theory for parameterizing state matrices is the technical core — it is what allows S4 to maintain stable gradients over very long sequences. Near-linear complexity and strong Long Range Arena results. Essential background for understanding why Mamba's selective extension was necessary rather than merely incremental.</p>
+        <div class="paper-links">
+          <a class="link-btn link-primary" href="https://arxiv.org/abs/2111.00396" target="_blank">arXiv 2111.00396</a>
+        </div>
+      </div>
+
+      <div class="paper-card">
+        <div class="tag-row">
+          <span class="tag tag-architecture">Architecture</span>
+        </div>
+        <h3>RWKV: Reinventing RNNs for the Transformer Era</h3>
+        <div class="authors">Peng et al. · EMNLP 2023 · arXiv 2305.13048</div>
+        <p>RWKV is notable for demonstrating that recurrent models can match Transformers at 7B+ parameter scale — a claim that was widely disbelieved until this paper. The linear recurrence with WKV attention mechanism is less theoretically elegant than Mamba but proved more tractable to scale. Include it as evidence that the recurrent paradigm was never truly exhausted, just temporarily outscaled.</p>
+        <div class="paper-links">
+          <a class="link-btn link-primary" href="https://arxiv.org/abs/2305.13048" target="_blank">arXiv 2305.13048</a>
+          <a class="link-btn link-acl" href="https://aclanthology.org/2023.emnlp-main.361/" target="_blank">ACL Anthology</a>
+        </div>
+      </div>
+
+      <div class="paper-card infra-paper">
+        <div class="tag-row">
+          <span class="tag tag-architecture">Architecture</span>
+          <span class="tag tag-infra">Infrastructure</span>
+          <span class="priority-label p-infra">Infrastructure — Quietly Essential</span>
+        </div>
+        <h3>FlashAttention-2: Faster Attention with Better Parallelism</h3>
+        <div class="authors">Dao · ICLR 2024 · arXiv 2307.08691</div>
+        <p>Infrastructure work that quietly enabled most of the long-context experiments in this entire survey. IO-aware exact attention: tiling computation to minimize HBM memory reads/writes, achieving 2–4× speedup over FlashAttention-1. It is easy to overlook how much of the apparent progress in long-context modeling is actually hardware-level efficiency improvement rather than architectural innovation. FlashAttention-2 is the clearest example of that dynamic.</p>
+        <div class="paper-links">
+          <a class="link-btn link-primary" href="https://arxiv.org/abs/2307.08691" target="_blank">arXiv 2307.08691</a>
+        </div>
+      </div>
+
+      <div class="paper-card">
+        <div class="tag-row">
+          <span class="tag tag-architecture">Architecture</span>
+        </div>
+        <h3>Transformer-XL: Attentive Language Models Beyond a Fixed-Length Context</h3>
+        <div class="authors">Dai et al. · ACL 2019</div>
+        <p>Segment-level recurrence via cached key-value memory — the first Transformer to handle long context through an explicit recurrent mechanism. Transformer-XL established the cached-KV paradigm that RMT, Infini-attention, and others would later extend. Its 80% longer dependency capture over standard Transformers looks modest now but was genuinely significant in 2019.</p>
+        <div class="paper-links">
+          <a class="link-btn link-acl" href="https://aclanthology.org/P19-1285/" target="_blank">ACL Anthology</a>
+          <a class="link-btn link-primary" href="https://arxiv.org/abs/1901.02860" target="_blank">arXiv</a>
+        </div>
+      </div>
+
+      <div class="paper-card overlooked">
+        <div class="tag-row">
+          <span class="tag tag-architecture">Architecture</span>
+          <span class="priority-label p-overlooked">Worth Revisiting</span>
+        </div>
+        <h3>Investigating Recurrent Transformers with Dynamic Halt</h3>
+        <div class="authors">Ray Chowdhury & Caragea · arXiv 2402.00976 · 2024</div>
+        <p>A systematic diagnostic study of Universal Transformer variants with dynamic halting. The finding that chunk-wise recurrent Transformers outperform dense universal transformers on state-tracking and parity tasks is more interesting than the abstract suggests. This is exactly the kind of paper that gets overlooked in favor of larger-scale results but that provides critical evidence about what recursive depth actually buys, computationally speaking.</p>
+        <div class="paper-links">
+          <a class="link-btn link-primary" href="https://arxiv.org/abs/2402.00976" target="_blank">arXiv 2402.00976</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════ SECTION 5: SURVEYS ══════════════════ -->
+  <div class="section" id="surveys">
+    <div class="section-header">
+      <span class="section-num">§ 05</span>
+      <h2>Existing Surveys & Reviews</h2>
+    </div>
+    <div class="section-intro">
+      The existing survey landscape is patchy. There is a reasonable survey of classical RvNN/RNN architectures (arXiv:2510.17867), a solid review of efficient attention methods, and strong domain-specific surveys on mathematical reasoning and theorem proving. What does not yet exist — as of March 2026 — is a survey that explicitly connects the classical tree-recursive tradition to modern inference-time recursive LMs. That gap is the justification for this survey.
+    </div>
+    <div class="paper-grid">
+
+      <div class="paper-card landmark">
+        <div class="tag-row">
+          <span class="tag tag-survey">Survey</span>
+          <span class="priority-label p-landmark">Baseline — Read First</span>
+        </div>
+        <h3>A Survey of Recursive and Recurrent Neural Networks</h3>
+        <div class="authors">arXiv 2510.17867 · Oct 2025</div>
+        <p>The most recent broad survey of the classical recursive/recurrent space and the clearest structural baseline for organizing the early sections of this literature review. The taxonomy — General, Structured, and Hybrid categories covering Grid RNNs, Hierarchical RNNs, Tree RNNs, etc. — is reasonably principled. Notable limitation: it does not cover 2025-era RLMs at all, treating the survey as a history of a completed paradigm rather than a living one. The gap between this survey's endpoint and the RLM papers is precisely where a new contribution can intervene.</p>
+        <div class="paper-links">
+          <a class="link-btn link-primary" href="https://arxiv.org/abs/2510.17867" target="_blank">arXiv 2510.17867</a>
+        </div>
+      </div>
+
+      <div class="paper-card">
+        <div class="tag-row">
+          <span class="tag tag-survey">Survey</span>
+          <span class="tag tag-infra">Efficient Attention</span>
+        </div>
+        <h3>Efficient Attention Mechanisms for Large Language Models: A Survey</h3>
+        <div class="authors">arXiv 2507.19595 · July 2025</div>
+        <p>Systematic overview of linear attention approximations, sparse patterns, block-wise routing, and compressive memory approaches. The hardware-algorithm co-design sections are particularly useful for situating why certain architectural choices are preferred in practice over theoretically stronger alternatives. Pairs well with the FlashAttention-2 and Ring Attention papers above.</p>
+        <div class="paper-links">
+          <a class="link-btn link-primary" href="https://arxiv.org/abs/2507.19595" target="_blank">arXiv 2507.19595</a>
+        </div>
+      </div>
+
+      <div class="paper-card">
+        <div class="tag-row">
+          <span class="tag tag-survey">Survey</span>
+          <span class="tag tag-application">Math Reasoning</span>
+        </div>
+        <h3>A Survey of Deep Learning for Mathematical Reasoning</h3>
+        <div class="authors">Lu, Qiu, Yu, Welleck, Chang · ACL 2023</div>
+        <p>The standard reference for how tree-structured and recursive neural networks have been applied to equation generation via AST decoders, math word problem solving, and symbolic calculation. The coverage of structural representations is directly relevant to this survey's applications section. Also includes a useful taxonomy of problem types (MWPs, theorem proving, geometry, symbolic calculation) that can be borrowed for chapter organization.</p>
+        <div class="paper-links">
+          <a class="link-btn link-acl" href="https://aclanthology.org/2023.acl-long.817/" target="_blank">ACL Anthology</a>
+          <a class="link-btn link-github" href="https://github.com/lupantech/dl4math" target="_blank">Paper List</a>
+        </div>
+      </div>
+
+      <div class="paper-card">
+        <div class="tag-row">
+          <span class="tag tag-survey">Survey</span>
+          <span class="tag tag-application">Theorem Proving</span>
+        </div>
+        <h3>A Survey on Deep Learning for Theorem Proving</h3>
+        <div class="authors">Li et al. · COLM 2024 · arXiv 2404.09939</div>
+        <p>Comprehensive review of neural theorem proving across Lean, Isabelle, Coq, and Metamath. The premise selection and tactic prediction sections are most relevant here — these are tasks where recursive problem decomposition has a natural structural motivation. The survey is thorough but does not engage with whether recursive architectures might be specifically suited to these tasks beyond their use as general LMs.</p>
+        <div class="paper-links">
+          <a class="link-btn link-primary" href="https://arxiv.org/abs/2404.09939" target="_blank">arXiv 2404.09939</a>
+          <a class="link-btn link-github" href="https://github.com/zhaoyu-li/DL4TP" target="_blank">GitHub</a>
+        </div>
+      </div>
+
+      <div class="paper-card">
+        <div class="tag-row">
+          <span class="tag tag-survey">Survey</span>
+        </div>
+        <h3>Mamba-360: Survey of State Space Models as Transformer Alternative</h3>
+        <div class="authors">Patro et al. · arXiv 2404.16112 · 2024</div>
+        <p>A useful reference for the SSM landscape, though it reads more as a catalog than an analysis. The Gating/Structural/Recurrent taxonomy is practical for organizing the SSM section of the survey. Best used as a lookup resource rather than read cover-to-cover.</p>
+        <div class="paper-links">
+          <a class="link-btn link-primary" href="https://arxiv.org/abs/2404.16112" target="_blank">arXiv 2404.16112</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════ SECTION 6: APPLICATIONS ══════════════════ -->
+  <div class="section" id="applications">
+    <div class="section-header">
+      <span class="section-num">§ 06</span>
+      <h2>Specialized Applications</h2>
+    </div>
+    <div class="section-intro">
+      Recursive and hierarchical architectures applied to specific high-value domains. This section is deliberately selective — it focuses on applications where the recursive structure of the task (hierarchical proof decomposition, AST-based equation generation, sequential code history) provides genuine motivation for recursive model design, not just cases where a recursive model happened to be evaluated.
+    </div>
+    <div class="paper-grid">
+
+      <div class="paper-card">
+        <div class="tag-row">
+          <span class="tag tag-application">Math Reasoning</span>
+        </div>
+        <h3>NERHRT: Hierarchical Recursive Tree Decoding for Math Word Problems</h3>
+        <div class="authors">ScienceDirect 2023</div>
+        <p>Proposes a hierarchical recursive tree decoder that aggregates ancestor node information for solving math word problems, with decimal-notation numerical embeddings and dual-direction graph attention. State-of-the-art on four MWP benchmarks at time of publication. A representative example of RvNN applied directly to structured mathematical generation — useful for demonstrating that classical recursive ideas were still productive in 2023 for domain-specific tasks even as they had been abandoned for general NLP.</p>
+        <div class="paper-links">
+          <a class="link-btn link-pdf" href="https://www.sciencedirect.com/science/article/abs/pii/S0306457323000614" target="_blank">ScienceDirect</a>
+        </div>
+      </div>
+
+      <div class="paper-card">
+        <div class="tag-row">
+          <span class="tag tag-benchmark">Benchmark</span>
+          <span class="tag tag-application">Long-Context</span>
+        </div>
+        <h3>OOLONG & OOLONG-Pairs Benchmarks</h3>
+        <div class="authors">Referenced in Zhang et al. 2025 RLM paper</div>
+        <p>Designed to be unsolvable by approximate attention and standard RAG. OOLONG requires linear-complexity global aggregation over all entries in a structured dataset; OOLONG-Pairs requires quadratic pairwise reasoning. These are among the few benchmarks where the failure mode of non-recursive approaches is clearly observable rather than merely statistical. The benchmark design deserves discussion in the survey as an example of how evaluation choices shape what counts as a long-context "solution."</p>
+        <div class="paper-links">
+          <a class="link-btn link-primary" href="https://arxiv.org/abs/2512.24601" target="_blank">See RLM paper (arXiv 2512.24601)</a>
+        </div>
+      </div>
+
+      <div class="paper-card">
+        <div class="tag-row">
+          <span class="tag tag-application">Long-Context</span>
+        </div>
+        <h3>MemWalker: Interactive Memory for Long-Context Dialogue</h3>
+        <div class="authors">Chen et al. · arXiv 2310.05029 · 2023</div>
+        <p>Constructs a tree-like data structure over input text that an LM navigates when answering long-context questions. MemWalker occupies an interesting intermediate position between static summarization and the full RLM paradigm — it uses tree structure without full self-invocation. The comparison with RLMs in the Zhang et al. paper is instructive and worth reproducing in the survey.</p>
+        <div class="paper-links">
+          <a class="link-btn link-primary" href="https://arxiv.org/abs/2310.05029" target="_blank">arXiv 2310.05029</a>
+        </div>
+      </div>
+
+      <div class="paper-card">
+        <div class="tag-row">
+          <span class="tag tag-application">Long-Context</span>
+          <span class="tag tag-survey">Survey</span>
+        </div>
+        <h3>Beyond the Limits: Survey of Techniques to Extend Context Length in LLMs</h3>
+        <div class="authors">Wang et al. · arXiv 2402.02244 · 2024</div>
+        <p>The most comprehensive landscape survey of context extension techniques: position interpolation, attention approximation, memory augmentation, context compression. Maps the full solution space within which RLMs sit as an inference-time alternative. Reading this alongside the RLM paper clarifies what RLMs add to an already crowded design space — primarily, exact information preservation without architectural modification.</p>
+        <div class="paper-links">
+          <a class="link-btn link-primary" href="https://arxiv.org/abs/2402.02244" target="_blank">arXiv 2402.02244</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════ SECTION 7: RESEARCHERS ══════════════════ -->
+  <div class="section" id="researchers">
+    <div class="section-header">
+      <span class="section-num">§ 07</span>
+      <h2>Influential Researchers & Laboratories</h2>
+    </div>
+    <div class="section-intro">
+      These are the investigators whose work most directly defines the recursive architecture research tradition. Use them as seeds for citation network analysis on Semantic Scholar — trace who cites whom and when, rather than treating each paper as an isolated contribution.
+    </div>
+    <div class="researcher-grid">
+      <div class="researcher-card">
+        <h4>Richard Socher</h4>
+        <div class="affil">Stanford NLP (formerly) → Salesforce</div>
+        <p>The defining figure of classical RvNNs. His 2010–2014 output — the 2013 RNTN/SST paper, the 2014 thesis — established the foundational vocabulary. Also co-invented GloVe, which separates him from the purely structural thread of this survey.</p>
+      </div>
+      <div class="researcher-card">
+        <h4>Christopher Manning</h4>
+        <div class="affil">Stanford NLP</div>
+        <p>Co-supervisor of Socher's RvNN program; led the Stanford Parser that provided structural input to those models. Manning's sustained interest in syntax-aware NLP spans the entire period this survey covers, making his group's output a useful longitudinal baseline.</p>
+      </div>
+      <div class="researcher-card">
+        <h4>Alex L. Zhang</h4>
+        <div class="affil">MIT CSAIL</div>
+        <p>Primary author of the 2025 RLM paper and creator of RLM-Qwen3-8B. PhD student at MIT; follow his arXiv preprints closely given the speed at which this sub-field is currently moving.</p>
+      </div>
+      <div class="researcher-card">
+        <h4>Omar Khattab</h4>
+        <div class="affil">Stanford / DSPy</div>
+        <p>Co-author of the RLM paper; created DSPy, which has added native RLM support. His research trajectory from retrieval-augmented generation toward compositional LM programs makes him the clearest intellectual bridge between the RAG era and the RLM era.</p>
+      </div>
+      <div class="researcher-card">
+        <h4>Albert Gu</h4>
+        <div class="affil">Carnegie Mellon / Together AI</div>
+        <p>Lead inventor of S4 and Mamba. The HiPPO memory theory he developed is the most principled treatment of long-range dependency in the non-attention literature. Follow his work as the primary source for claims about what SSMs can and cannot represent.</p>
+      </div>
+      <div class="researcher-card">
+        <h4>Tri Dao</h4>
+        <div class="affil">Stanford / Together AI</div>
+        <p>Co-inventor of Mamba and FlashAttention. FlashAttention (1 & 2) is the infrastructure that makes all modern long-context experiments tractable — Dao's systems perspective on ML hardware is often underrepresented in purely algorithmic surveys.</p>
+      </div>
+      <div class="researcher-card">
+        <h4>Mostafa Dehghani</h4>
+        <div class="affil">Google DeepMind</div>
+        <p>First author of Universal Transformers — the conceptual bridge between classical depth-wise recursion and modern RLMs. Also led Vision Transformer work, showing the breadth of his architectural thinking.</p>
+      </div>
+      <div class="researcher-card">
+        <h4>Samuel Bowman</h4>
+        <div class="affil">NYU / Anthropic</div>
+        <p>Created SNLI and demonstrated that RvNNs can learn logical semantics. His transition to large-scale RLHF work at Anthropic is itself a data point about the trajectory of the field — from structured compositional models toward learned human preference alignment.</p>
+      </div>
+      <div class="researcher-card">
+        <h4>Tsendsuren Munkhdalai</h4>
+        <div class="affil">Google</div>
+        <p>Author of NTI (syntax-free tree indexers), Infini-attention, and Titans (test-time memory). The consistent thread across all three is hierarchical or persistent memory — arguably the most sustained single-researcher contribution to recursive memory in NLP.</p>
+      </div>
+      <div class="researcher-card">
+        <h4>Yikang Shen</h4>
+        <div class="affil">MIT / IBM Research</div>
+        <p>Author of ON-LSTM and subsequent syntax-aware language models. Key figure for the latent tree induction thread — the attempt to recover structural computation from sequential models without explicit syntactic supervision.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════ SECTION 8: DATABASES ══════════════════ -->
+  <div class="section" id="databases">
+    <div class="section-header">
+      <span class="section-num">§ 08</span>
+      <h2>Academic Databases & Search Strategy</h2>
+    </div>
+    <div class="section-intro">
+      The most useful single action for keeping this bibliography current is to run a forward citation search on arXiv:2512.24601 in Semantic Scholar every few weeks. The RLM paradigm is new enough that its citation graph is still forming, and important follow-on work is appearing monthly.
+    </div>
+
+    <table class="db-table">
+      <thead>
+        <tr>
+          <th>Database / Resource</th>
+          <th>Recommended Query</th>
+          <th>Direct Link</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>arXiv cs.CL</strong></td>
+          <td>"recursive language model" OR "recursive transformer" 2024:2026</td>
+          <td><a href="https://arxiv.org/search/?query=recursive+language+model&searchtype=all&start=0" target="_blank">Search arXiv →</a></td>
+        </tr>
+        <tr>
+          <td><strong>ACL Anthology</strong></td>
+          <td>recursive neural, tree-structured LSTM, compositional NLP</td>
+          <td><a href="https://aclanthology.org/search/?q=recursive+neural" target="_blank">ACL Anthology →</a></td>
+        </tr>
+        <tr>
+          <td><strong>Semantic Scholar — Forward Citations</strong></td>
+          <td>Navigate to arXiv:2512.24601 → "Cited By" tab for all papers citing the RLM paper</td>
+          <td><a href="https://www.semanticscholar.org/paper/Recursive-Language-Models-Zhang-Kraska/687bac2d3320083eb4530bf18bb8f8f721477600" target="_blank">Semantic Scholar →</a></td>
+        </tr>
+        <tr>
+          <td><strong>HuggingFace Papers</strong></td>
+          <td>Daily feed: tag "long-context" + "recursive"</td>
+          <td><a href="https://huggingface.co/papers/2512.24601" target="_blank">RLM on HuggingFace →</a></td>
+        </tr>
+        <tr>
+          <td><strong>GitHub: DL4TP</strong></td>
+          <td>Curated deep learning for theorem proving list</td>
+          <td><a href="https://github.com/zhaoyu-li/DL4TP" target="_blank">zhaoyu-li/DL4TP →</a></td>
+        </tr>
+        <tr>
+          <td><strong>GitHub: DL4Math</strong></td>
+          <td>Deep learning for mathematical reasoning (Lu et al.)</td>
+          <td><a href="https://github.com/lupantech/dl4math" target="_blank">lupantech/dl4math →</a></td>
+        </tr>
+        <tr>
+          <td><strong>Connected Papers</strong></td>
+          <td>Start from arXiv:2512.24601, expand citation graph</td>
+          <td><a href="https://www.connectedpapers.com/main/d28caba028ea3d6fd4c0c10e2dba9a3e12bb68d3/Recursive-Language-Models/graph" target="_blank">Connected Papers →</a></td>
+        </tr>
+        <tr>
+          <td><strong>GitHub: Mamba Paper List</strong></td>
+          <td>Comprehensive SSM/Mamba paper tracking (Event-AHU)</td>
+          <td><a href="https://github.com/Event-AHU/Mamba_State_Space_Model_Paper_List" target="_blank">Event-AHU/Mamba →</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ══════════════════ SECTION 9: TAXONOMY ══════════════════ -->
+  <div class="section" id="taxonomy">
+    <div class="section-header">
+      <span class="section-num">§ 09</span>
+      <h2>Proposed Taxonomy for Chapter Organization</h2>
+    </div>
+    <div class="section-intro">
+      A working taxonomy — not a definitive one. The categories below are designed around the survey's central argument (three paradigm shifts) rather than purely by technical type. Some papers belong in multiple categories; where that happens, the tension is usually worth noting rather than resolved by an arbitrary assignment.
+    </div>
+    <div class="taxonomy-grid">
+      <div class="tax-card">
+        <div class="tax-header">Paradigm I — Structural Composition</div>
+        <div class="tax-body"><ul>
+          <li>Tree-guided composition (RvNN, RNTN)</li>
+          <li>Gated recursive cells (Tree-LSTM)</li>
+          <li>Matrix-vector modification (MV-RNN)</li>
+          <li>Logical semantics in trees (Bowman 2015)</li>
+          <li>Continuous / parser-free recursion (CRvNN)</li>
+        </ul>
+        <div class="tax-note">Dominant paradigm 2010–2018. Displaced by BERT-scale pretraining, not shown to be theoretically inferior.</div>
+        </div>
+      </div>
+      <div class="tax-card">
+        <div class="tax-header">Paradigm II — Recurrent Memory</div>
+        <div class="tax-body"><ul>
+          <li>Segment caching (Transformer-XL)</li>
+          <li>Memory tokens (RMT)</li>
+          <li>Selective state spaces (S4, Mamba, RWKV)</li>
+          <li>Compressive attention (Infini-attention)</li>
+          <li>Test-time gradient memory (Titans)</li>
+        </ul>
+        <div class="tax-note">Dominant paradigm 2018–2024. Efficient but lossy — compression is unavoidable.</div>
+        </div>
+      </div>
+      <div class="tax-card">
+        <div class="tax-header">Paradigm III — Inference-Time Recursion</div>
+        <div class="tax-body"><ul>
+          <li>Programmatic self-invocation (RLM 2025)</li>
+          <li>Dynamic recursion depth (MoR)</li>
+          <li>Theoretical grounding (arXiv:2603.02112)</li>
+          <li>Industrial implementation (Prime Intellect)</li>
+        </ul>
+        <div class="tax-note">Emerging paradigm 2025–present. No architectural modification required; exact information preservation; requires tool use capability.</div>
+        </div>
+      </div>
+      <div class="tax-card">
+        <div class="tax-header">Bridging Architectures</div>
+        <div class="tax-body"><ul>
+          <li>Universal Transformers (depth-wise sharing)</li>
+          <li>ON-LSTM (latent tree induction)</li>
+          <li>Recurrent Transformers w/ dynamic halt</li>
+          <li>MemWalker (tree navigation)</li>
+        </ul>
+        <div class="tax-note">These resist clean paradigm assignment. That resistance is analytically useful — they show continuity where the paradigm narrative implies rupture.</div>
+        </div>
+      </div>
+      <div class="tax-card">
+        <div class="tax-header">Performance Benchmarks</div>
+        <div class="tax-body"><ul>
+          <li>SST (sentiment — classical era)</li>
+          <li>SNLI / MultiNLI (NLI)</li>
+          <li>Long Range Arena (LRA)</li>
+          <li>OOLONG / OOLONG-Pairs (RLM-specific)</li>
+          <li>BrowseComp-Plus (multi-hop QA)</li>
+          <li>LoCoDiff (code history tracking)</li>
+          <li>GSM8K / MATH (mathematical reasoning)</li>
+        </ul></div>
+      </div>
+      <div class="tax-card">
+        <div class="tax-header">Application Domains</div>
+        <div class="tax-body"><ul>
+          <li>Sentiment analysis (SST, RNTN)</li>
+          <li>Natural language inference</li>
+          <li>Math word problems / equation generation</li>
+          <li>Formal theorem proving (Lean, Isabelle)</li>
+          <li>Code generation / tracking</li>
+          <li>Long-document QA</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════ SECTION 10: OPEN QUESTIONS ══════════════════ -->
+  <div class="section" id="openqs">
+    <div class="section-header">
+      <span class="section-num">§ 10</span>
+      <h2>Open Questions & Research Frontiers</h2>
+    </div>
+    <div class="section-intro">
+      A literature survey that only catalogues the past is less useful than one that positions its reader to generate new work. The questions below are not rhetorical — they are genuinely unresolved, and some of them point toward specific experimental designs or theoretical gaps.
+    </div>
+    <div class="questions-grid">
+      <div class="q-card">
+        <h4>Is recursion a computational primitive or an engineering workaround?</h4>
+        <p>The 2026 theoretical paper (arXiv:2603.02112) argues that recursion depth enables computation that constant-depth Transformers cannot perform. If true, this is a strong claim that should be empirically testable. If false — if RLMs are simply chunking with bookkeeping — the paradigm needs a more modest framing.</p>
+      </div>
+      <div class="q-card">
+        <h4>Can recursive depth be learned end-to-end without collapse?</h4>
+        <p>Universal Transformers with dynamic halting largely failed to achieve widespread adoption. MoR attempts learned routing for recursion depth. Neither has demonstrated stable, consistent convergence across diverse tasks. This may be the central training dynamics challenge for recursive architectures.</p>
+      </div>
+      <div class="q-card">
+        <h4>What is the relationship between classical RvNN compositionality and modern RLM recursion?</h4>
+        <p>The survey's central claim — that these belong in the same intellectual lineage — is asserted in the thesis banner but not yet proven. What would it mean to operationalize this connection? Is there a formal reduction between tree-structured composition and inference-time self-invocation?</p>
+      </div>
+      <div class="q-card">
+        <h4>Does recursive inference generalize to algorithmic reasoning without explicit tool scaffolding?</h4>
+        <p>Current RLMs require Python REPL access and tool-use capability. Whether the recursive strategy can be induced via prompting alone — without a sandboxed executor — is unclear. This question matters for deployment contexts where tool access is unavailable.</p>
+      </div>
+      <div class="q-card">
+        <h4>Why did RvNNs lose to Transformers, and is that reason still valid?</h4>
+        <p>The conventional answer is scale: BERT-style pretraining worked better, so parse-tree supervision became unnecessary overhead. But CRvNN's 2021 length generalization results suggest compositional recursion may have strengths that weren't properly evaluated before abandonment. The question is whether those strengths matter at scales current hardware allows.</p>
+      </div>
+      <div class="q-card">
+        <h4>How should RLMs be evaluated against Mamba and SSMs on tasks requiring exact information preservation?</h4>
+        <p>OOLONG was designed to expose SSM and RAG failures specifically. A benchmark designed to expose RLM failures would be a genuine contribution. What tasks require the kind of globally coherent compression that SSMs do well but recursive chunking cannot provide?</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTNOTE -->
+  <div class="footnote-strip">
+    <p><strong>On methodology:</strong> This bibliography was assembled through searches across arXiv cs.CL, the ACL Anthology, and Semantic Scholar citation graphs, cross-referenced against the reference lists of Zhang et al. 2025 (arXiv:2512.24601) and arXiv:2510.17867. Papers were selected for inclusion based on relevance to the recursion thread specifically; coverage of adjacent areas (general efficient attention, LLM pretraining, RLHF) is intentionally limited.</p>
+    <p><strong>Currency:</strong> Links were verified in March 2026. arXiv identifiers are stable; DOI links and project pages may change. Where a paper appears in both arXiv and a venue proceedings, the venue link is preferred.</p>
+    <p><strong>What this guide does not cover:</strong> Graph Neural Networks (recursive over graph structure but a distinct literature); hierarchical VAEs; neural program synthesis (adjacent but not primary). These are worth noting as related work in the survey's scope section, not as core citations.</p>
+  </div>
+
+</div><!-- /page-wrap -->
+
+<footer>
+  <div>Compiled March 2026 · Working document — not a final submission</div>
+  <div style="margin-top:0.5rem;">Sources: arXiv · ACL Anthology · Semantic Scholar · Stanford NLP · Prime Intellect</div>
+</footer>
+
+</body>
+</html>
